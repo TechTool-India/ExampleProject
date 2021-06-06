@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -39,7 +41,35 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email'
+        ]);
+        
+        try {
+            DB::beginTransaction();
+            // Logic For Save User Data
+
+            $create_user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make('password')
+            ]);
+
+            if(!$create_user){
+                DB::rollBack();
+
+                return back()->with('error', 'Something went wrong while saving user data');
+            }
+
+            DB::commit();
+            return redirect()->route('users.index')->with('success', 'User Stored Successfully.');
+
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
     }
 
     /**
