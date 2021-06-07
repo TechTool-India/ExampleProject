@@ -91,7 +91,15 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        //
+        $user =  User::whereId($id)->first();
+
+        if(!$user){
+            return back()->with('error', 'User Not Found');
+        }
+
+        return view('users.edit')->with([
+            'user' => $user
+        ]);
     }
 
     /**
@@ -103,7 +111,34 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email'
+        ]);
+        
+        try {
+            DB::beginTransaction();
+            // Logic For Save User Data
+
+            $update_user = User::where('id', $id)->update([
+                'name' => $request->name,
+                'email' => $request->email
+            ]);
+
+            if(!$update_user){
+                DB::rollBack();
+
+                return back()->with('error', 'Something went wrong while update user data');
+            }
+
+            DB::commit();
+            return redirect()->route('users.index')->with('success', 'User Updated Successfully.');
+
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
     }
 
     /**
@@ -114,6 +149,24 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            DB::beginTransaction();
+
+            $delete_user = User::whereId($id)->delete();
+
+            if(!$delete_user){
+                DB::rollBack();
+                return back()->with('error', 'There is an error while deleting user.');
+            }
+
+            DB::commit();
+            return redirect()->route('users.index')->with('success', 'User Deleted successfully.');
+
+
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
     }
 }

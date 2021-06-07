@@ -29,6 +29,7 @@
                         <tr>
                             <th>Name</th>
                             <th>Email</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -36,6 +37,18 @@
                            <tr>
                                <td>{{$user->name}}</td>
                                <td>{{$user->email}}</td>
+                               <td style="display: flex">
+                                   <a href="{{ route('users.edit', ['user' => $user->id]) }}" class="btn btn-primary m-2">
+                                        <i class="fa fa-pen"></i>
+                                   </a>
+                                   <form method="POST" action="{{ route('users.destroy', ['user' => $user->id]) }}">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-danger m-2" type="submit">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                   </form>
+                               </td>
                            </tr>
                        @endforeach
                     </tbody>
