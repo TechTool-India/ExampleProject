@@ -16,7 +16,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::select('id', 'email', 'name')->simplePaginate(5);
+        $users = User::select('id', 'email', 'name', 'status')->paginate(5);
 
         return view('users.list')->with([
             'users' => $users
@@ -166,6 +166,31 @@ class UserController extends Controller
 
         } catch (\Throwable $th) {
             DB::rollBack();
+            throw $th;
+        }
+    }
+
+
+    /**
+     * To Update Status of User
+     * @param Integer $user_id
+     * @param Integer $Status_code
+     * @return Success Response.
+     */
+    public function updateStatus($user_id, $status_code)
+    {
+        try {
+            $update_user = User::whereId($user_id)->update([
+                'status' => $status_code
+            ]);
+
+            if($update_user){
+                return redirect()->route('users.index')->with('success', 'User Status Updated Successfully.');
+            }
+            
+            return redirect()->route('users.index')->with('error', 'Fail to update user status.');
+
+        } catch (\Throwable $th) {
             throw $th;
         }
     }

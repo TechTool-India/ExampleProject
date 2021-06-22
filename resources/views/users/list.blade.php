@@ -39,6 +39,15 @@
                                    <a href="{{ route('users.edit', ['user' => $user->id]) }}" class="btn btn-primary m-2">
                                         <i class="fa fa-pen"></i>
                                    </a>
+                                   @if($user->status == 1)
+                                   <a href="{{ route('users.status.update', ['user_id' => $user->id, 'status_code' => 0]) }}" class="btn btn-danger m-2">
+                                        <i class="fa fa-ban"></i>
+                                   </a>
+                                   @else
+                                    <a href="{{ route('users.status.update', ['user_id' => $user->id, 'status_code' => 1]) }}" class="btn btn-success m-2">
+                                            <i class="fa fa-check"></i>
+                                    </a>
+                                   @endif
                                    <form method="POST" action="{{ route('users.destroy', ['user' => $user->id]) }}">
                                         @csrf
                                         @method('DELETE')
