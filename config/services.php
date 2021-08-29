@@ -36,4 +36,10 @@ return [
         'redirect' => 'https://examplelaravel8.test/facebook/callback/'
     ],
 
+    'google' => [
+        'client_id' => '', //USE FROM Google DEVELOPER ACCOUNT
+        'client_secret' => '', //USE FROM Google DEVELOPER ACCOUNT
+        'redirect' => 'https://0a41-106-212-124-50.ngrok.io/google/callback/'
+    ],
+
 ];
